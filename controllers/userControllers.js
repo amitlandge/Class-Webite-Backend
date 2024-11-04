@@ -3,6 +3,7 @@ import { setToken } from "../utility/features.js";
 import { ErrorHandler } from "../utility/error.js";
 import bcryptjs from "bcryptjs";
 import { cookieOption } from "../utility/cookiesOption.js";
+import { Contact } from "../model/contactSchema.js";
 const register = async (req, res, next) => {
   try {
     const { email, username, password } = req.body;
@@ -66,6 +67,18 @@ const getProfile = async (req, res) => {
     next(error);
   }
 };
+
+const getAllUser = async (req, res) => {
+  try {
+    const users = await User.find();
+    res.status(200).json({
+      message: "success",
+      users: users,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 const logout = (req, res) => {
   res
     .status(200)
@@ -74,5 +87,22 @@ const logout = (req, res) => {
       message: "logout Successfully",
     });
 };
-
-export { register, login, getProfile, logout };
+const createContact = async (req, res, next) => {
+  try {
+    const { name, subject, email, message } = req.body;
+    const create = await Contact.create({
+      name,
+      email,
+      subject,
+      message,
+    });
+    if (create) {
+      res.status(200).json({
+        message: "Success",
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+export { register, login, getProfile, logout, getAllUser, createContact };

@@ -1,6 +1,10 @@
 import cloudinary from "cloudinary";
 import { Enroll } from "../model/enrollSchema.js";
 import { ErrorHandler } from "../utility/error.js";
+import {
+  deleteImageFromCloudanary,
+  sendFileToCloud,
+} from "../utility/features.js";
 
 const enrollStudent = async (req, res, next) => {
   try {
@@ -10,9 +14,10 @@ const enrollStudent = async (req, res, next) => {
       lastName,
       phone,
       age,
-      grade,
+      course,
       address,
       userId,
+      gender,
     } = req.body;
 
     if (!req.files) {
@@ -42,8 +47,9 @@ const enrollStudent = async (req, res, next) => {
           lastName,
           phone,
           address,
+          gender,
           age,
-          grade,
+          course,
           user: userId,
           avatar: profilePicture,
         });
@@ -76,4 +82,133 @@ const getEnrollDetails = async (req, res, next) => {
     return next(error);
   }
 };
-export { enrollStudent, getEnrollDetails };
+const getAllEnroll = async (req, res, next) => {
+  try {
+    const getAllEnrollData = await Enroll.find();
+    res.status(200).json({
+      message: "Success",
+      enrolls: getAllEnrollData,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+const getStudentDetails = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const getEnrollData = await Enroll.findById(id);
+    res.status(200).json({
+      message: "Success",
+      studentDeatils: getEnrollData,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+const changeRequestStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log(req.body);
+    const changeStatus = await Enroll.findByIdAndUpdate(id, req.body);
+    await changeStatus.save();
+    res.status(200).json({
+      message: "Success",
+      changeStatus: changeStatus,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+const deleteEnroll = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    console.log(req.body);
+    const deleteEnrollForm = await Enroll.findByIdAndDelete(id);
+    // await deleteEnrollForm.save();
+    res.status(200).json({
+      message: "Success",
+      changeStatus: deleteEnrollForm,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+const getGirlsAndBoys = async (req, res, next) => {
+  try {
+    const [boys, girls] = await Promise.all([
+      Enroll.countDocuments({ gender: "male" }),
+      Enroll.countDocuments({ gender: "female" }),
+    ]);
+    res.status(200).json({
+      message: "Success",
+      count: { girls, boys },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+const editEnroll = async (req, res, next) => {
+  try {
+    const updates = { ...req.body };
+    console.log(updates);
+    const enroll = await Enroll.findById(updates._id);
+    if (!enroll) {
+      return next(new ErrorHandler("Enroll is not found"));
+    }
+    if (!req.files) {
+      delete updates.avatar;
+      const updatedCourse = await Enroll.findByIdAndUpdate(
+        updates._id,
+        updates,
+        {
+          new: true,
+        }
+      );
+      res
+        .status(200)
+        .json({ message: "Enroll updated successfully", updatedCourse });
+    }
+    let publicIds = [enroll.avatar?.public_id];
+    console.log(publicIds);
+
+    if (req.files?.avatar) {
+      const newFileArray = Array.from(req.files?.avatar);
+      if (newFileArray.length === 0) {
+        newFileArray.push(req.files?.avatar);
+      }
+      console.log(newFileArray);
+      const fileLinks = await sendFileToCloud(newFileArray);
+
+      const [updatedCourse] = await Promise.all([
+        Enroll.findByIdAndUpdate(
+          updates._id,
+          {
+            ...updates,
+            avatar: fileLinks[0],
+          },
+          {
+            new: true, // Return the updated course
+            runValidators: true, // Ensure model validators run on update
+          }
+        ),
+        deleteImageFromCloudanary(publicIds),
+      ]);
+      res
+        .status(200)
+        .json({ message: "Enroll updated successfully", updatedCourse });
+    }
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+};
+export {
+  enrollStudent,
+  getEnrollDetails,
+  getAllEnroll,
+  getStudentDetails,
+  changeRequestStatus,
+  deleteEnroll,
+  getGirlsAndBoys,
+  editEnroll,
+};

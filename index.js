@@ -6,7 +6,9 @@ import connectDb from "./db/db.js";
 import userRoutes from "./routes/userRoutes.js";
 import enrollRoutes from "./routes/enrollRoutes.js";
 import messageRoutes from "./routes/messageRoutes.js";
+import courseRoutes from "./routes/courseRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
+import teacherRoutes from "./routes/teacherRoutes.js";
 import dotenv from "dotenv";
 import cloudinary from "cloudinary";
 import expressUpload from "express-fileupload";
@@ -58,12 +60,14 @@ app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/", enrollRoutes);
 app.use("/api/v1/message", messageRoutes);
 app.use("/api/v1/payment", paymentRoutes);
+app.use("/api/v1/course", courseRoutes);
+app.use("/api/v1/teacher", teacherRoutes);
 app.use(errorHandler);
 app.set("io", io);
 io.on("connection", (socket) => {
   console.log("Socket is Connected", socket?.id);
   socket.on(NEW_MESSAGE, async (data) => {
-    console.log(data);
+    console.log();
     const message = await Message.create(data);
     let newMessage = {
       ...data,

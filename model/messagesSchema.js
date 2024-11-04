@@ -5,8 +5,9 @@ const messagesSchema = new Schema(
     message: {
       type: String,
     },
-    grade: {
+    course: {
       type: String,
+      required: true,
     },
     attachments: [
       {

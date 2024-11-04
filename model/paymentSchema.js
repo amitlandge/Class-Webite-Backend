@@ -6,7 +6,7 @@ const PaymentSchema = new mongoose.Schema({
     required: true,
   },
   studentName: String,
-  class: String,
+  course: String,
   amount: Number,
   paymentId: String,
   orderId: String,

@@ -17,7 +17,7 @@ const payment = async (req, res, next) => {
   }
 };
 const verifyPayment = async (req, res) => {
-  const { orderId, paymentId, signature, studentName, className, amount } =
+  const { orderId, paymentId, signature, studentName, course, amount } =
     req.body;
 
   const sign = crypto
@@ -29,7 +29,7 @@ const verifyPayment = async (req, res) => {
     const payment = await Payment.create({
       userId: req.user,
       studentName,
-      class: className,
+      course: course,
       amount,
       paymentId,
       orderId,
@@ -57,4 +57,14 @@ const getAllPaymentData = async (req, res, next) => {
     next(error);
   }
 };
-export { payment, verifyPayment, getAllPaymentData };
+const sendKey = async (req, res, next) => {
+  try {
+    res.status(200).json({
+      message: "Success",
+      key_id: process.env.KEY_ID,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+export { payment, verifyPayment, getAllPaymentData, sendKey };

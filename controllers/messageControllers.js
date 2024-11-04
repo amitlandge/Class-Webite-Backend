@@ -8,28 +8,18 @@ import {
 
 const getMessages = async (req, res, next) => {
   try {
-    const { grade } = req.query;
+    const { course } = req.query;
 
-    // const resultPerpage = 7;
-    // const skipChat = (page - 1) * resultPerpage;
-    console.log(grade);
-    const chats = await Message.find({ grade: grade })
-      //   .skip(skipChat)
-      //   .limit(resultPerpage)
+    const chats = await Message.find({ course: course })
       .sort({ createdAt: -1 })
-      //   .populate("sender", "name")
       .lean();
     if (!chats) {
       return next(new ErrorHandler("Chat Not Found"));
     }
-    // const messageCount = await Message.countDocuments({ chatId: cid });
 
-    // const totalPages = Math.ceil(messageCount / resultPerpage) || 0;
     res.status(200).json({
       status: "Succesfull",
-      //   chats: chats.length,
       messages: chats.reverse(),
-      //   totalPages: totalPages,
     });
   } catch (error) {
     next(error);
@@ -38,7 +28,7 @@ const getMessages = async (req, res, next) => {
 
 const sendAttachment = async (req, res, next) => {
   const files = req.files?.files || [];
-  const { fName, lName, userId, grade } = req.body;
+  const { fName, lName, userId, course } = req.body;
   console.log(req.body);
 
   const newFileArray = Array.from(files);
@@ -47,24 +37,7 @@ const sendAttachment = async (req, res, next) => {
   }
 
   try {
-    // const chats = await Chat.findById(chatId);
-    // const myProfile = await User.findById(req.user, "name");
-    // if (!chats) {
-    //   return next(new ErrorHandler("Chat Not Found"));
-    // }
-
     const fileLinks = await sendFileToCloud(newFileArray);
-
-    // {
-    //   _id: "something",
-    //   sender: {
-    //     _id: "xyz",
-    //     name: "amit",
-    //     std: "8th",
-    //   },
-    //   content: "Hii This side Amit",
-    //   attachments: "",
-    // },
 
     const attachments = {
       message: "",
@@ -74,7 +47,7 @@ const sendAttachment = async (req, res, next) => {
         fName,
         lName,
       },
-      grade: grade,
+      course: course,
     };
     console.log(attachments);
     const message = await Message.create(attachments);

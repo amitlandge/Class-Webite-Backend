@@ -21,7 +21,11 @@ const enrollSchema = new Schema(
       required: [true, "Please Enter Your Last Name"],
       trim: true,
     },
-
+    gender: {
+      type: String,
+      required: [true, "Please Enter Your Gender"],
+      trim: true,
+    },
     request: {
       type: String,
       default: "Pending",
@@ -50,7 +54,7 @@ const enrollSchema = new Schema(
       type: String,
       required: true,
     },
-    grade: {
+    course: {
       type: String,
       required: true,
     },
