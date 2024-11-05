@@ -24,7 +24,7 @@ const verifyPayment = async (req, res) => {
     .createHmac("sha256", process.env.SECRETE_ID)
     .update(orderId + "|" + paymentId)
     .digest("hex");
-  console.log(req.user);
+  
   if (sign === signature) {
     const payment = await Payment.create({
       userId: req.user,
@@ -44,7 +44,7 @@ const verifyPayment = async (req, res) => {
 
 const getAllPaymentData = async (req, res, next) => {
   try {
-    console.log("enter");
+
     const getPaymentData = await Payment.find({
       userId: req.user,
       status: "Success",

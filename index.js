@@ -1,4 +1,3 @@
-console.log("Lets get Stareted");
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -22,7 +21,7 @@ const app = express();
 dotenv.config({
   path: "./.env",
 });
-console.log(process.env.KEY_ID);
+
 const corsOptions = {
   origin: "http://localhost:5173",
   methods: ["GET", "POST", "PUT", "DELETE"],
@@ -49,9 +48,7 @@ cloudinary.config({
 });
 app.use(express.json());
 app.use(cookieParser());
-app.get("/", (req, res) => {
-  res.send("Hii");
-});
+
 const server = createServer(app);
 const io = new Server(server, {
   cors: corsOptions,
@@ -65,9 +62,7 @@ app.use("/api/v1/teacher", teacherRoutes);
 app.use(errorHandler);
 app.set("io", io);
 io.on("connection", (socket) => {
-  console.log("Socket is Connected", socket?.id);
   socket.on(NEW_MESSAGE, async (data) => {
-    console.log();
     const message = await Message.create(data);
     let newMessage = {
       ...data,

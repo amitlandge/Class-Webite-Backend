@@ -25,7 +25,6 @@ const register = async (req, res, next) => {
 
     setToken(res, user, 200, "User Register");
   } catch (error) {
-    console.log(error);
     next(error);
   }
 };

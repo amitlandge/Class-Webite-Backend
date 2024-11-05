@@ -29,7 +29,7 @@ const getMessages = async (req, res, next) => {
 const sendAttachment = async (req, res, next) => {
   const files = req.files?.files || [];
   const { fName, lName, userId, course } = req.body;
-  console.log(req.body);
+
 
   const newFileArray = Array.from(files);
   if (newFileArray.length === 0) {
@@ -49,7 +49,7 @@ const sendAttachment = async (req, res, next) => {
       },
       course: course,
     };
-    console.log(attachments);
+    
     const message = await Message.create(attachments);
 
     emitEvent(req, NEW_MESSAGE, {
@@ -68,7 +68,7 @@ const sendAttachment = async (req, res, next) => {
 const deleteMessage = async (req, res, next) => {
   try {
     const { mid } = req.params;
-    console.log(req.params);
+    
     const message = await Message.findById(mid).lean();
 
     const publicIds = [];

@@ -108,7 +108,7 @@ const getStudentDetails = async (req, res, next) => {
 const changeRequestStatus = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log(req.body);
+
     const changeStatus = await Enroll.findByIdAndUpdate(id, req.body);
     await changeStatus.save();
     res.status(200).json({
@@ -122,7 +122,7 @@ const changeRequestStatus = async (req, res) => {
 const deleteEnroll = async (req, res, next) => {
   try {
     const { id } = req.params;
-    console.log(req.body);
+
     const deleteEnrollForm = await Enroll.findByIdAndDelete(id);
     // await deleteEnrollForm.save();
     res.status(200).json({
@@ -150,7 +150,7 @@ const getGirlsAndBoys = async (req, res, next) => {
 const editEnroll = async (req, res, next) => {
   try {
     const updates = { ...req.body };
-    console.log(updates);
+
     const enroll = await Enroll.findById(updates._id);
     if (!enroll) {
       return next(new ErrorHandler("Enroll is not found"));
@@ -169,14 +169,13 @@ const editEnroll = async (req, res, next) => {
         .json({ message: "Enroll updated successfully", updatedCourse });
     }
     let publicIds = [enroll.avatar?.public_id];
-    console.log(publicIds);
 
     if (req.files?.avatar) {
       const newFileArray = Array.from(req.files?.avatar);
       if (newFileArray.length === 0) {
         newFileArray.push(req.files?.avatar);
       }
-      console.log(newFileArray);
+
       const fileLinks = await sendFileToCloud(newFileArray);
 
       const [updatedCourse] = await Promise.all([
@@ -187,8 +186,8 @@ const editEnroll = async (req, res, next) => {
             avatar: fileLinks[0],
           },
           {
-            new: true, // Return the updated course
-            runValidators: true, // Ensure model validators run on update
+            new: true,
+            runValidators: true,
           }
         ),
         deleteImageFromCloudanary(publicIds),
@@ -198,7 +197,6 @@ const editEnroll = async (req, res, next) => {
         .json({ message: "Enroll updated successfully", updatedCourse });
     }
   } catch (error) {
-    console.error(error);
     next(error);
   }
 };

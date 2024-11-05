@@ -12,7 +12,7 @@ const createCourse = async (req, res, next) => {
   try {
     const { title, description, subjects, topic } = req.body;
     if (!req.files) {
-      console.log("Error");
+      
       return next(new ErrorHandler("Please Upload Image", 400));
     }
     const { image } = req.files;
