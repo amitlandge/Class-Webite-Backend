@@ -2,7 +2,6 @@ import { cookieOption } from "./cookiesOption.js";
 import jwt from "jsonwebtoken";
 import cloudinary from "cloudinary";
 export const setToken = (res, payload, code, message) => {
-  console.log(payload._id);
   const token = jwt.sign({ id: payload._id }, process.env.SECRETE_KEY, {
     expiresIn: "1d",
   });
@@ -25,6 +24,7 @@ export const sendFileToCloud = async (files = []) => {
     return new Promise((resolve, reject) => {
       cloudinary.v2.uploader.upload(
         file.tempFilePath,
+
         {
           folder: "images",
           resource_type: "auto",

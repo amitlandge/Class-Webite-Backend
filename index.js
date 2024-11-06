@@ -16,14 +16,14 @@ import { Server } from "socket.io";
 import { createServer } from "http";
 import { NEW_MESSAGE } from "./constants/event.js";
 import { Message } from "./model/messagesSchema.js";
-import razorpay from "./utility/config.js";
+
 const app = express();
 dotenv.config({
   path: "./.env",
 });
 
 const corsOptions = {
-  origin: "http://localhost:5173",
+  origin: process.env.FRONTEND_URL,
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true,
 };
@@ -36,7 +36,7 @@ app.use(
 connectDb();
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.FRONTEND_URL,
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })

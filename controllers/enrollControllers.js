@@ -123,11 +123,15 @@ const deleteEnroll = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    const deleteEnrollForm = await Enroll.findByIdAndDelete(id);
-    // await deleteEnrollForm.save();
+    const enroll = await Enroll.findById(id);
+
+    let publicIds = [enroll.avatar?.public_id];
+    await Promise.all([
+      Enroll.findByIdAndDelete(id),
+      deleteImageFromCloudanary(publicIds),
+    ]);
     res.status(200).json({
       message: "Success",
-      changeStatus: deleteEnrollForm,
     });
   } catch (error) {
     next(error);
