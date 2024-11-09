@@ -39,7 +39,7 @@ const login = async (req, res, next) => {
     }
 
     const user = await User.findOne({ username }).select("+password");
-
+    console.log(user);
     if (!user) {
       return next(new ErrorHandler("Invalid User", 400));
     }

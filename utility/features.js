@@ -16,6 +16,7 @@ export const setToken = (res, payload, code, message) => {
         _id: payload._id,
         username: payload.username,
         email: payload.email,
+        role: payload.role,
       },
     });
 };
