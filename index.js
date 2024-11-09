@@ -16,26 +16,25 @@ import { Server } from "socket.io";
 import { createServer } from "http";
 import { NEW_MESSAGE } from "./constants/event.js";
 import { Message } from "./model/messagesSchema.js";
+import { corsOptions } from "./utility/corsOptions.js";
 
 const app = express();
 dotenv.config({
   path: "./.env",
 });
 
-const corsOptions = {
-  origin: "*",
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true,
-};
+// const corsOptions = {
+//   origin: [process.env.LOCALHOST],
+//   methods: ["GET", "POST", "PUT", "DELETE"],
+//   credentials: true,
+// };
 
 connectDb();
-app.use(
-  cors({
-    origin: process.env.FRONTEND_URL,
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-  })
-);
+app.use(cors(corsOptions));
+const server = createServer(app);
+const io = new Server(server, {
+  cors: corsOptions,
+});
 app.use(
   expressUpload({
     useTempFiles: true,
@@ -49,10 +48,6 @@ cloudinary.config({
 app.use(express.json());
 app.use(cookieParser());
 
-const server = createServer(app);
-const io = new Server(server, {
-  cors: corsOptions,
-});
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/", enrollRoutes);
 app.use("/api/v1/message", messageRoutes);
