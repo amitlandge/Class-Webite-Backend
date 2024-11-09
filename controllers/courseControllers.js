@@ -12,7 +12,6 @@ const createCourse = async (req, res, next) => {
   try {
     const { title, description, subjects, topic } = req.body;
     if (!req.files) {
-      
       return next(new ErrorHandler("Please Upload Image", 400));
     }
     const { image } = req.files;
@@ -20,7 +19,9 @@ const createCourse = async (req, res, next) => {
     await cloudinary.v2.uploader
       .upload(image.tempFilePath, {
         folder: "Course-Image",
-        width: 150,
+        quality: "auto:best",
+        width: 800,
+
         crop: "scale",
       })
       .then(async (res) => {

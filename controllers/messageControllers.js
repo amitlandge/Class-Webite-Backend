@@ -8,18 +8,25 @@ import {
 
 const getMessages = async (req, res, next) => {
   try {
-    const { course } = req.query;
+    const course = req.query.course;
+    const page = parseInt(req.query.page) || 1;
+    const limit = 4;
+    const skip = (page - 1) * limit;
 
     const chats = await Message.find({ course: course })
       .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
       .lean();
     if (!chats) {
       return next(new ErrorHandler("Chat Not Found"));
     }
-
+    const messageCount = await Message.countDocuments({ course: course });
+    const totalPages = Math.ceil(messageCount / limit) || 0;
     res.status(200).json({
       status: "Succesfull",
       messages: chats.reverse(),
+      totalPages,
     });
   } catch (error) {
     next(error);
@@ -29,7 +36,6 @@ const getMessages = async (req, res, next) => {
 const sendAttachment = async (req, res, next) => {
   const files = req.files?.files || [];
   const { fName, lName, userId, course } = req.body;
-
 
   const newFileArray = Array.from(files);
   if (newFileArray.length === 0) {
@@ -49,7 +55,7 @@ const sendAttachment = async (req, res, next) => {
       },
       course: course,
     };
-    
+
     const message = await Message.create(attachments);
 
     emitEvent(req, NEW_MESSAGE, {
@@ -68,7 +74,7 @@ const sendAttachment = async (req, res, next) => {
 const deleteMessage = async (req, res, next) => {
   try {
     const { mid } = req.params;
-    
+
     const message = await Message.findById(mid).lean();
 
     const publicIds = [];

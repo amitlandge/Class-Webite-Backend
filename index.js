@@ -23,15 +23,10 @@ dotenv.config({
 });
 
 const corsOptions = {
-  origin: process.env.FRONTEND_URL,
+  origin: "*",
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true,
 };
-app.use(
-  expressUpload({
-    useTempFiles: true,
-  })
-);
 
 connectDb();
 app.use(
@@ -39,6 +34,11 @@ app.use(
     origin: process.env.FRONTEND_URL,
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
+  })
+);
+app.use(
+  expressUpload({
+    useTempFiles: true,
   })
 );
 cloudinary.config({
