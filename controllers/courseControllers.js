@@ -60,10 +60,14 @@ const getAllCourses = async (req, res, next) => {
 const getCourseDetails = async (req, res, next) => {
   try {
     const { cid } = req.params;
-    const course = await Course.findOne({ _id: cid });
+    const course = await Course.findOne({ _id: cid }).lean();
+    const courseCount = await Enroll.countDocuments({ course: course?.title });
     res.status(200).json({
       message: "Success",
-      course,
+      course: {
+        ...course,
+        courseCount,
+      },
     });
   } catch (error) {
     next(error);

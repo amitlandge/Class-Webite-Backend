@@ -10,7 +10,7 @@ const getMessages = async (req, res, next) => {
   try {
     const course = req.query.course;
     const page = parseInt(req.query.page) || 1;
-    const limit = 4;
+    const limit = req.query.limit;
     const skip = (page - 1) * limit;
 
     const chats = await Message.find({ course: course })
