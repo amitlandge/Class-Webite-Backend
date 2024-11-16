@@ -8,6 +8,7 @@ import messageRoutes from "./routes/messageRoutes.js";
 import courseRoutes from "./routes/courseRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
 import teacherRoutes from "./routes/teacherRoutes.js";
+import lectureRoutes from "./routes/lectureRoutes.js";
 import dotenv from "dotenv";
 import cloudinary from "cloudinary";
 import expressUpload from "express-fileupload";
@@ -54,6 +55,7 @@ app.use("/api/v1/message", messageRoutes);
 app.use("/api/v1/payment", paymentRoutes);
 app.use("/api/v1/course", courseRoutes);
 app.use("/api/v1/teacher", teacherRoutes);
+app.use("/api/v1/lecture", lectureRoutes);
 app.use(errorHandler);
 app.set("io", io);
 io.on("connection", (socket) => {

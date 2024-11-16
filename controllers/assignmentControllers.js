@@ -8,10 +8,9 @@ import {
 const createAssignment = async (req, res, next) => {
   try {
     const { title, note, course } = req.body;
-  
+
     if (!req.files) {
-     
-      return next(new ErrorHandler("Please Upload Image", 400));
+      return next(new ErrorHandler("Please Upload Video", 400));
     }
     const { images } = req.files;
     const newFileArray = Array.from(images);
@@ -89,7 +88,7 @@ const getCourseAssignments = async (req, res, next) => {
     const assignments = await Assignment.find({
       course: course,
     });
-    
+
     if (assignments) {
       res.status(200).json({
         message: "Success",
