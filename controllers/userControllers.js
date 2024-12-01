@@ -53,7 +53,7 @@ const login = async (req, res, next) => {
     next(error);
   }
 };
-const getProfile = async (req, res) => {
+const getProfile = async (req, res, next) => {
   try {
     const user = await User.findById(req.user).lean();
     res.status(200).json({
