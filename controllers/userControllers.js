@@ -12,10 +12,11 @@ const register = async (req, res, next) => {
     }
     let user = await User.findOne({ username: username });
     let userEmail = await User.findOne({ email: email });
-    if (user && userEmail) {
-      return next(
-        new ErrorHandler("This Username and Email Already Exist", 400)
-      );
+    if (userEmail) {
+      return next(new ErrorHandler("This Email Already Exist", 400));
+    }
+    if (user) {
+      return next(new ErrorHandler("This Username Already Exist", 400));
     }
     user = await User.create({
       username,
