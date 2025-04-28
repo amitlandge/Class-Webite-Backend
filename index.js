@@ -25,12 +25,6 @@ dotenv.config({
   path: "./.env",
 });
 
-// const corsOptions = {
-//   origin: [process.env.LOCALHOST],
-//   methods: ["GET", "POST", "PUT", "DELETE"],
-//   credentials: true,
-// };
-
 connectDb();
 app.use(cors(corsOptions));
 const server = createServer(app);

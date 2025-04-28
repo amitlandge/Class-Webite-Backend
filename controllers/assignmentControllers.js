@@ -10,7 +10,7 @@ const createAssignment = async (req, res, next) => {
     const { title, note, course } = req.body;
 
     if (!req.files) {
-      return next(new ErrorHandler("Please Upload Video", 400));
+      return next(new ErrorHandler("Please Upload File", 400));
     }
     const { images } = req.files;
     const newFileArray = Array.from(images);
